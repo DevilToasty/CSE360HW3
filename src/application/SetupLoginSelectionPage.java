@@ -15,10 +15,12 @@ import databasePart1.*;
  */
 public class SetupLoginSelectionPage {
 	
-    private final DatabaseHelper databaseHelper;
+	private final DatabaseHelper databaseHelper;
+    private final QuestionManager questionManager;
 
-    public SetupLoginSelectionPage(DatabaseHelper databaseHelper) {
+    public SetupLoginSelectionPage(DatabaseHelper databaseHelper, QuestionManager questionManager) {
         this.databaseHelper = databaseHelper;
+        this.questionManager = questionManager;
     }
 
     public void show(CustomTrackedStage primaryStage) {
@@ -28,10 +30,10 @@ public class SetupLoginSelectionPage {
         Button loginButton = new Button("Login");
         
         setupButton.setOnAction(a -> {
-            new SetupAccountPage(databaseHelper).show(primaryStage);
+            new SetupAccountPage(databaseHelper, questionManager).show(primaryStage);
         });
         loginButton.setOnAction(a -> {
-        	new UserLoginPage(databaseHelper).show(primaryStage);
+        	new UserLoginPage(databaseHelper, questionManager).show(primaryStage);
         });
         
         Button quitButton = new Button("Quit");

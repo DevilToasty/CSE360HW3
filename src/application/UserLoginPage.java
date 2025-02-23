@@ -18,9 +18,11 @@ import databasePart1.*;
 public class UserLoginPage {
 	
     private final DatabaseHelper databaseHelper;
+    private final QuestionManager questionManager;
 
-    public UserLoginPage(DatabaseHelper databaseHelper) {
+    public UserLoginPage(DatabaseHelper databaseHelper, QuestionManager questionManager) {
         this.databaseHelper = databaseHelper;
+        this.questionManager = questionManager;
     }
 
     public void show(CustomTrackedStage primaryStage) {
@@ -59,7 +61,7 @@ public class UserLoginPage {
             
             try {
             	User user = new User(userName, password, "");
-            	WelcomeLoginPage welcomeLoginPage = new WelcomeLoginPage(databaseHelper);
+            	WelcomeLoginPage welcomeLoginPage = new WelcomeLoginPage(databaseHelper, questionManager);
             	
             	// retrieve the user's role from the database using userName
             	String roles = databaseHelper.getUserRoles(userName);
@@ -72,7 +74,7 @@ public class UserLoginPage {
             			primaryStage.setUser(user); // set the user of the application
             			System.out.println("User " + user.getUserName() + " logged in using OTP.");
             			
-            			new UserResetPasswordPage(databaseHelper).show(primaryStage, user);
+            			new UserResetPasswordPage(databaseHelper, questionManager).show(primaryStage, user);
         			}else if (databaseHelper.login(user)) {
             			primaryStage.setUser(user); // set the user of the application
             			System.out.println("User " + user.getUserName() + " logged in.");
@@ -83,13 +85,13 @@ public class UserLoginPage {
             				String role = databaseHelper.getUserRoles(user.getUserName());
    
             				if (role.contains("Student")) {
-                            	new StudentHomePage(databaseHelper, user).show(primaryStage);
+                            	new StudentHomePage(databaseHelper, questionManager, user).show(primaryStage);
             				} else if (role.contains("Admin")) {
                                 new AdminHomePage(databaseHelper).show(primaryStage);
             				} else if (role.contains("Instructor")) {
                                 new InstructorHomePage(databaseHelper, user).show(primaryStage);
             				} else if (role.contains("Staff")) {
-                                new StaffHomePage(databaseHelper, user).show(primaryStage);
+                                new StaffHomePage(databaseHelper, user).show(primaryStage, questionManager);
             				} else if (role.contains("Reviewer")) {
                                 new ReviewerHomePage(databaseHelper, user).show(primaryStage);
             				}

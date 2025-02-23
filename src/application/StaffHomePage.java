@@ -8,10 +8,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 
-/**
- * StudentHomePage class represents the user interface for the student user.
- * This page includes only a back button to return to the previous page.
- */
 public class StaffHomePage {
 
     private final DatabaseHelper databaseHelper;
@@ -22,23 +18,27 @@ public class StaffHomePage {
         this.currentUser = currentUser;
     }
 
-    /**
-     * Displays the student home page in the provided primary stage.
-     * @param primaryStage The primary stage where the scene will be displayed.
-     */
-    public void show(CustomTrackedStage primaryStage) {
+    
+    public void show(CustomTrackedStage primaryStage, QuestionManager questionManager) {
         BorderPane borderPane = new BorderPane();
 
-        // Back Button at the top left
         Button backButton = new Button("<-- Back");
         backButton.setOnAction(e -> primaryStage.goBack());
         BorderPane.setAlignment(backButton, Pos.TOP_LEFT);
         borderPane.setTop(backButton);
         Label userLabel = new Label("Hello,  Staff!");
         userLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+        
+        Button discussionButton = new Button("View Discussion");
+        
+		discussionButton.setOnAction(a -> {
+		       new DiscussionView(databaseHelper, questionManager, currentUser).show(primaryStage);     
+		});
+        
 
         VBox centerBox = new VBox(userLabel);
         centerBox.setAlignment(Pos.CENTER);
+        centerBox.getChildren().add(discussionButton);
         borderPane.setCenter(centerBox);
 
         Scene scene = new Scene(borderPane, 800, 400);

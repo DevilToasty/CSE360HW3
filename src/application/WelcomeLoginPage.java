@@ -19,10 +19,12 @@ import databasePart1.*;
  */
 public class WelcomeLoginPage {
 
-    private final DatabaseHelper databaseHelper;
+	private final DatabaseHelper databaseHelper;
+    private final QuestionManager questionManager;
 
-    public WelcomeLoginPage(DatabaseHelper databaseHelper) {
+    public WelcomeLoginPage(DatabaseHelper databaseHelper, QuestionManager questionManager) {
         this.databaseHelper = databaseHelper;
+        this.questionManager = questionManager;
     }
 
     public void show(CustomTrackedStage primaryStage, User user) {
@@ -100,13 +102,13 @@ public class WelcomeLoginPage {
             String role = selected.getText();
             System.out.println("Selected role: " + role);
             if (role.contains("Student")) {
-            	new StudentHomePage(databaseHelper, user).show(primaryStage);
+            	new StudentHomePage(databaseHelper, questionManager, user).show(primaryStage);
 			} else if (role.contains("Admin")) {
                 new AdminHomePage(databaseHelper).show(primaryStage);
 			} else if (role.contains("Instructor")) {
                 new InstructorHomePage(databaseHelper, user).show(primaryStage);
 			} else if (role.contains("Staff")) {
-                new StaffHomePage(databaseHelper, user).show(primaryStage);
+                new StaffHomePage(databaseHelper, user).show(primaryStage, questionManager);
 			} else if (role.contains("Reviewer")) {
                 new ReviewerHomePage(databaseHelper, user).show(primaryStage);
 			}
@@ -116,7 +118,7 @@ public class WelcomeLoginPage {
         logoutButton.setOnAction(a -> {
             primaryStage.clearHistory();
             primaryStage.setUser(null);
-            new SetupLoginSelectionPage(databaseHelper).show(primaryStage);
+            new SetupLoginSelectionPage(databaseHelper, questionManager).show(primaryStage);
         });
 
         layout.getChildren().addAll(welcomeLabel, radioBox, continueButton, logoutButton);

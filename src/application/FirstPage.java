@@ -15,8 +15,11 @@ public class FirstPage {
 	
 	// Reference to the DatabaseHelper for database interactions
 	private final DatabaseHelper databaseHelper;
-	public FirstPage(DatabaseHelper databaseHelper) {
+	private final QuestionManager questionManager;
+	
+	public FirstPage(DatabaseHelper databaseHelper, QuestionManager questionManager) {
         this.databaseHelper = databaseHelper;
+        this.questionManager = questionManager;
     }
 
 	/**
@@ -35,7 +38,7 @@ public class FirstPage {
 	    // Button to navigate to the SetupAdmin page
 	    
 	    continueButton.setOnAction(a -> {
-	        new AdminSetupPage(databaseHelper).show(primaryStage);
+	        new AdminSetupPage(databaseHelper, questionManager).show(primaryStage);
 	    });
 
 	    layout.getChildren().addAll(userLabel, continueButton);

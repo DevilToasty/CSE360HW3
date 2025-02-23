@@ -1,19 +1,19 @@
 package application;
 
 import databasePart1.DatabaseHelper;
-import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
 public class SuccessAndLogoutPage {
 	
 	private final DatabaseHelper databaseHelper;
+    private final QuestionManager questionManager;
 
-    public SuccessAndLogoutPage(DatabaseHelper databaseHelper) {
+    public SuccessAndLogoutPage(DatabaseHelper databaseHelper, QuestionManager questionManager) {
         this.databaseHelper = databaseHelper;
+        this.questionManager = questionManager;
     }
 
 	public void show(CustomTrackedStage primaryStage) { // don't implement back button her
@@ -27,7 +27,7 @@ public class SuccessAndLogoutPage {
 	    loginButton.setOnAction(a -> {
 	    	primaryStage.clearHistory(); // remove page history
 	    	primaryStage.setUser(null); // log out user
-        	new SetupLoginSelectionPage(databaseHelper).show(primaryStage);
+        	new SetupLoginSelectionPage(databaseHelper, questionManager).show(primaryStage);
         });
 	    
         layout.getChildren().addAll(userLabel, loginButton);
@@ -53,7 +53,7 @@ public class SuccessAndLogoutPage {
 	    loginButton.setOnAction(a -> {
 	    	primaryStage.clearHistory(); // remove page history
 	    	primaryStage.setUser(null); // log out user
-        	new SetupLoginSelectionPage(databaseHelper).show(primaryStage);
+        	new SetupLoginSelectionPage(databaseHelper, questionManager).show(primaryStage);
         });
 	    
         layout.getChildren().addAll(userLabel, loginButton);

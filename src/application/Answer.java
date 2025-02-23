@@ -4,20 +4,32 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class Answer {
-
     private final UUID id;
     private String answerText;
     private String author;
     private boolean isApprovedSolution;
-    private Question referencedQuestion; // parent question
+    private Question referencedQuestion;
     private LocalDateTime timestamp;
 
     public Answer(String answerText, String author) {
-        this.id = UUID.randomUUID(); // gen unique ID
+        this.id = UUID.randomUUID();
         this.answerText = answerText;
         this.author = author;
         this.timestamp = LocalDateTime.now();
         this.isApprovedSolution = false;
+    }
+    
+    public Answer(String answerText, String author, LocalDateTime timestamp, UUID id, boolean isApprovedSolution) {
+        this.id = id;
+        this.answerText = answerText;
+        this.author = author;
+        this.timestamp = timestamp;
+        this.isApprovedSolution = isApprovedSolution;
+    }
+    
+    public Answer(String answerText, String author, LocalDateTime timestamp, UUID id, boolean isApprovedSolution, Question referencedQuestion) {
+        this(answerText, author, timestamp, id, isApprovedSolution);
+        this.referencedQuestion = referencedQuestion;
     }
 
     public UUID getId() {
@@ -40,12 +52,10 @@ public class Answer {
         return isApprovedSolution;
     }
 
-    // mark this answer as approved
     public void markAsSolution() {
         this.isApprovedSolution = true;
     }
 
-    // remove  approved solution status
     public void unmarkAsSolution() {
         this.isApprovedSolution = false;
     }
@@ -61,8 +71,7 @@ public class Answer {
     public void removeQuestion() {
         this.referencedQuestion = null;
     }
-    
-    // optionally update the answer text (prob not use)
+
     public void updateAnswerText(String newText) {
         this.answerText = newText;
     }

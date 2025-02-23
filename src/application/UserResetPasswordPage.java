@@ -15,10 +15,12 @@ import javafx.stage.Stage;
 
 public class UserResetPasswordPage {
 	
-    private final DatabaseHelper databaseHelper;
+	private final DatabaseHelper databaseHelper;
+    private final QuestionManager questionManager;
 
-    public UserResetPasswordPage(DatabaseHelper databaseHelper) {
+    public UserResetPasswordPage(DatabaseHelper databaseHelper, QuestionManager questionManager) {
         this.databaseHelper = databaseHelper;
+        this.questionManager = questionManager;
     }
 
 	public void show(CustomTrackedStage primaryStage, User user) { // no back button here, may want to change to just username string
@@ -52,7 +54,7 @@ public class UserResetPasswordPage {
 	
 			databaseHelper.changePassword(user.getUserName(), password);
 	        
-	        new SuccessAndLogoutPage(databaseHelper).show(primaryStage);
+	        new SuccessAndLogoutPage(databaseHelper, questionManager).show(primaryStage);
 	       
 	    });
 	

@@ -18,10 +18,13 @@ import databasePart1.*;
  */
 public class AdminSetupPage {
 	
-    private final DatabaseHelper databaseHelper;
+	private final DatabaseHelper databaseHelper;
+    private final QuestionManager questionManager;
 
-    public AdminSetupPage(DatabaseHelper databaseHelper) {
+
+    public AdminSetupPage(DatabaseHelper databaseHelper, QuestionManager questionManager) {
         this.databaseHelper = databaseHelper;
+        this.questionManager = questionManager;
     }
 
     public void show(CustomTrackedStage primaryStage) {
@@ -67,7 +70,7 @@ public class AdminSetupPage {
                 System.out.println("Administrator setup completed.");
 	            
                 // Navigate to the Welcome Login Page
-                new WelcomeLoginPage(databaseHelper).show(primaryStage, user);
+                new WelcomeLoginPage(databaseHelper, questionManager).show(primaryStage, user);
             } catch (SQLException e) {
                 System.err.println("Database error: " + e.getMessage());
                 e.printStackTrace();
