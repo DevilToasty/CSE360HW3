@@ -44,7 +44,7 @@ public class QuestionManager {
     
     public void createAnswer(String author, String answerText, Question question) {
         if (!isValidAnswerText(answerText)) {
-            throw new IllegalArgumentException("Answer must be between 10 and 500 words.");
+            throw new IllegalArgumentException("Answer must be between 1 and 500 words.");
         }
         Answer a = new Answer(answerText, author);
         question.addAnswer(a);
@@ -200,6 +200,16 @@ public class QuestionManager {
         return userAnswers;
     }
     
+    public void refreshQuestion(Question question) {
+        // clear the existing answers for the question
+        question.getAnswers().clear();
+        // fetch updated answers from the database
+        List<Answer> freshAnswers = databaseHelper.getAnswersForQuestion(question.getId());
+        for (Answer a : freshAnswers) {
+            question.addAnswer(a);
+        }
+    }
+    
     private boolean isValidQuestionText(String text) {
         int wordCount = text.trim().split("\\s+").length;
         return wordCount >= 10 && wordCount <= 300;
@@ -207,6 +217,6 @@ public class QuestionManager {
     
     private boolean isValidAnswerText(String text) {
         int wordCount = text.trim().split("\\s+").length;
-        return wordCount >= 10 && wordCount <= 500;
+        return wordCount >= 1 && wordCount <= 500;
     }
 }

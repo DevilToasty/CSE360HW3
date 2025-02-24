@@ -10,13 +10,26 @@ public class Answer {
     private boolean isApprovedSolution;
     private Question referencedQuestion;
     private LocalDateTime timestamp;
+    private UUID parentAnswerId;
 
+    // constructor for a direct answer (no parent reply)
     public Answer(String answerText, String author) {
         this.id = UUID.randomUUID();
         this.answerText = answerText;
         this.author = author;
         this.timestamp = LocalDateTime.now();
         this.isApprovedSolution = false;
+        this.parentAnswerId = null;
+    }
+    
+    // constructor that accepts a parentAnswerId (for replying to an answer)
+    public Answer(String answerText, String author, UUID parentAnswerId) {
+        this.id = UUID.randomUUID();
+        this.answerText = answerText;
+        this.author = author;
+        this.timestamp = LocalDateTime.now();
+        this.isApprovedSolution = false;
+        this.parentAnswerId = parentAnswerId;
     }
     
     public Answer(String answerText, String author, LocalDateTime timestamp, UUID id, boolean isApprovedSolution) {
@@ -25,6 +38,7 @@ public class Answer {
         this.author = author;
         this.timestamp = timestamp;
         this.isApprovedSolution = isApprovedSolution;
+        this.parentAnswerId = null;
     }
     
     public Answer(String answerText, String author, LocalDateTime timestamp, UUID id, boolean isApprovedSolution, Question referencedQuestion) {
@@ -74,5 +88,13 @@ public class Answer {
 
     public void updateAnswerText(String newText) {
         this.answerText = newText;
+    }
+    
+    public UUID getParentAnswerId() {
+        return parentAnswerId;
+    }
+    
+    public void setParentAnswerId(UUID parentAnswerId) {
+        this.parentAnswerId = parentAnswerId;
     }
 }

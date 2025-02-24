@@ -79,13 +79,15 @@ public class DatabaseHelper {
         statement.execute(questionsTable);
         
         String answersTable = "CREATE TABLE IF NOT EXISTS Answers ("
-            + "id UUID PRIMARY KEY, "
-            + "questionId UUID NOT NULL, "
-            + "answerText CLOB NOT NULL, "
-            + "author VARCHAR(255) NOT NULL, "
-            + "isApprovedSolution BOOLEAN DEFAULT FALSE, "
-            + "timestamp TIMESTAMP NOT NULL, "
-            + "FOREIGN KEY (questionId) REFERENCES Questions(id))";
+                + "id UUID PRIMARY KEY, "
+                + "questionId UUID NOT NULL, "
+                + "answerText CLOB NOT NULL, "
+                + "author VARCHAR(255) NOT NULL, "
+                + "isApprovedSolution BOOLEAN DEFAULT FALSE, "
+                + "timestamp TIMESTAMP NOT NULL, "
+                + "parentAnswerId UUID, "
+                + "FOREIGN KEY (questionId) REFERENCES Questions(id), "
+                + "FOREIGN KEY (parentAnswerId) REFERENCES Answers(id))";
         statement.execute(answersTable);
     }
     
@@ -547,7 +549,7 @@ public class DatabaseHelper {
     }
     
     public boolean insertAnswer(Answer a, UUID questionId) {
-        String query = "INSERT INTO Answers (id, questionId, answerText, author, isApprovedSolution, timestamp) VALUES (?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO Answers (id, questionId, answerText, author, isApprovedSolution, timestamp, parentAnswerId) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
             pstmt.setObject(1, a.getId());
             pstmt.setObject(2, questionId);
@@ -555,6 +557,7 @@ public class DatabaseHelper {
             pstmt.setString(4, sanitize(a.getAuthor()));
             pstmt.setBoolean(5, a.isApprovedSolution());
             pstmt.setTimestamp(6, Timestamp.valueOf(a.getTimestamp()));
+            pstmt.setObject(7, a.getParentAnswerId());
             int rows = pstmt.executeUpdate();
             return rows > 0;
         } catch (SQLException e) {
@@ -666,6 +669,8 @@ public class DatabaseHelper {
                     Timestamp ts = rs.getTimestamp("timestamp");
                     LocalDateTime ldt = ts.toLocalDateTime();
                     Answer a = new Answer(answerText, author, ldt, id, isApprovedSolution);
+                    UUID parentId = (UUID) rs.getObject("parentAnswerId");
+                    a.setParentAnswerId(parentId);
                     answers.add(a);
                 } catch (Exception e) {
                     e.printStackTrace();

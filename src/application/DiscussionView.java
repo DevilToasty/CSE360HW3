@@ -28,6 +28,9 @@ public class DiscussionView {
     private CheckBox myQuestionsCheckbox;
     
     private VBox questionsContainer;
+    
+    // New field to hold the primary stage reference.
+    private CustomTrackedStage primaryStage;
 
     public DiscussionView(DatabaseHelper databaseHelper, QuestionManager questionManager, User currentUser) {
         this.databaseHelper = databaseHelper;
@@ -36,6 +39,8 @@ public class DiscussionView {
     }
     
     public void show(CustomTrackedStage primaryStage) {
+
+        this.primaryStage = primaryStage;
         BorderPane root = new BorderPane();
         root.setStyle("-fx-background-color: #f9f9f9;");
         
@@ -50,7 +55,8 @@ public class DiscussionView {
         createButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;");
 
         createButton.setOnAction(e -> {
-            new CreateQuestionPage(databaseHelper, questionManager, currentUser, this::updateQuestionList).show(primaryStage);
+            new CreateQuestionPage(databaseHelper, questionManager, currentUser, this::updateQuestionList)
+                .show(primaryStage);
         });
 
         headerRow.getChildren().addAll(backButton, titleLabel, createButton);
@@ -58,7 +64,7 @@ public class DiscussionView {
         titleLabel.setMaxWidth(Double.MAX_VALUE);
         titleLabel.setAlignment(Pos.CENTER);
         
-        // filter section
+        //filter
         HBox filterRow = new HBox(15);
         filterRow.setPadding(new Insets(5, 10, 10, 10));
         filterRow.setAlignment(Pos.CENTER_LEFT);
@@ -68,7 +74,7 @@ public class DiscussionView {
         myQuestionsCheckbox = new CheckBox("My Questions");
         filterRow.getChildren().addAll(unansweredCheckbox, unapprovedCheckbox, trustedReviewersCheckbox, myQuestionsCheckbox);
         
-        // listeners to checkboxes to update question list when toggled.
+        // functions to update
         unansweredCheckbox.setOnAction(e -> updateQuestionList());
         unapprovedCheckbox.setOnAction(e -> updateQuestionList());
         trustedReviewersCheckbox.setOnAction(e -> updateQuestionList());
@@ -78,7 +84,6 @@ public class DiscussionView {
         topContainer.getChildren().addAll(headerRow, filterRow);
         root.setTop(topContainer);
         
-        // questions list 
         questionsContainer = new VBox(10);
         questionsContainer.setPadding(new Insets(10));
         ScrollPane scrollPane = new ScrollPane(questionsContainer);
@@ -128,6 +133,11 @@ public class DiscussionView {
         
         for (Question q : filtered) {
             QuestionView qView = new QuestionView(q);
+            // Navigate to QuestionDetailView when a question snippet is clicked.
+            qView.setOnMouseClicked(event -> {
+                new QuestionDetailView(q, questionManager, databaseHelper, currentUser)
+                    .show(primaryStage);
+            });
             questionsContainer.getChildren().add(qView);
         }
     }
