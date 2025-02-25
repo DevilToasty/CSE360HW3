@@ -16,6 +16,7 @@ public class Question {
     private LocalDateTime timestamp;
     private boolean resolved;
 
+    // helper
     private void validateTitle(String title) {
         if (title != null && title.trim().split("\\s+").length > 20) {
             throw new IllegalArgumentException("Question title must be at most 20 words.");
@@ -96,9 +97,19 @@ public class Question {
         this.resolved = resolved;
     }
 
+    // to add replys to replys, but its broken kinda
     public void addAnswer(Answer answer) {
-        answer.setQuestion(this);
-        answers.add(answer);
+        // Only add if an answer with the same ID is not already present.
+        boolean alreadyPresent = answers.stream()
+                .anyMatch(a -> a.getId().equals(answer.getId()));
+        if (!alreadyPresent) {
+            answer.setQuestion(this);
+            answers.add(answer);
+            // If the answer is already approved, add it to the approvedSolutions list.
+            if (answer.isApprovedSolution() && !approvedSolutions.contains(answer)) {
+                approvedSolutions.add(answer);
+            }
+        }
     }
 
     public void removeAnswer(Answer answer) {
@@ -126,11 +137,26 @@ public class Question {
                 resolved = false;
             }
         } else {
-            throw new IllegalArgumentException("Answer is not marked as an approved solution.");
+            System.err.println("Warning: Attempt to unmark an answer that is not approved.");
+        }
+    }
+    
+    public void refreshAnswers(List<Answer> newAnswers) {
+        // replace the current answers list with the new answers
+        this.answers = new ArrayList<>(newAnswers);
+        this.approvedSolutions = new ArrayList<>();
+        for (Answer a : newAnswers) {
+            if (a.isApprovedSolution()) {
+                approvedSolutions.add(a);
+            }
         }
     }
 
     public void updateQuestionText(String newText) {
         this.questionText = newText;
+    }
+    
+    public boolean hasApprovedAnswer() {
+    	return approvedSolutions.size() > 0;
     }
 }

@@ -53,6 +53,7 @@ public class CreateQuestionPage {
         Label errorLabel = new Label();
         errorLabel.setStyle("-fx-text-fill: red; -fx-font-size: 12px;");
 
+        // to count words
         textArea.textProperty().addListener((observable, oldValue, newValue) -> {
             int wordCount = newValue.trim().isEmpty() ? 0 : newValue.trim().split("\\s+").length;
             wordCountLabel.setText("Word count: " + wordCount);
@@ -70,6 +71,8 @@ public class CreateQuestionPage {
             primaryStage.goBack(); 
         });
 
+        
+        // check all properties
         Button submitButton = new Button("Submit");
         submitButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;");
         submitButton.setOnAction(e -> {
@@ -97,6 +100,7 @@ public class CreateQuestionPage {
                 return;
             }
 
+            // possible DB error
             try {
                 questionManager.createQuestion(currentUser.getUserName(), title, text);
                 Alert alert = new Alert(Alert.AlertType.INFORMATION, "Question created successfully.", ButtonType.OK);
@@ -113,6 +117,7 @@ public class CreateQuestionPage {
             }
         });
 
+        // elements HBox
         HBox statusBox = new HBox();
         statusBox.setPadding(new Insets(5, 10, 5, 10));
         statusBox.setAlignment(Pos.CENTER_LEFT);

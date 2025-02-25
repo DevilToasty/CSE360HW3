@@ -13,11 +13,12 @@ public class ReplyBox extends VBox {
     private Button cancelButton;
     private Button sendButton;
     
-    // callback interface so the parent can process reply
+    // callback so the parent can process reply
     public interface ReplyCallback {
         void onSend(String text);
     }
     
+    // reply box object 
     public ReplyBox(ReplyCallback callback) {
         setSpacing(5);
         setPadding(new Insets(5));
@@ -28,7 +29,7 @@ public class ReplyBox extends VBox {
         
         wordCountLabel = new Label("Word count: 0");
         
-        textArea.textProperty().addListener((obs, oldText, newText) -> {
+        textArea.textProperty().addListener((obs, oldText, newText) -> { // listener to update word count 
             int wordCount = newText.trim().isEmpty() ? 0 : newText.trim().split("\\s+").length;
             wordCountLabel.setText("Word count: " + wordCount);
         });
@@ -45,11 +46,11 @@ public class ReplyBox extends VBox {
         sendButton.setOnAction(e -> {
             String text = textArea.getText().trim();
             int wordCount = text.isEmpty() ? 0 : text.split("\\s+").length;
-            if (wordCount > 500) {
+            if (wordCount > 500 || wordCount < 1) {
                 wordCountLabel.setText("Word count must be less than 500 words.");
             } else {
                 callback.onSend(text);
-                if(getParent() instanceof VBox) {
+                if(getParent() instanceof VBox) { // deletes self
                     ((VBox)getParent()).getChildren().remove(this);
                 }
             }

@@ -54,11 +54,13 @@ public class QuestionManager {
     
     public void markAnswerAsSolution(Question question, Answer answer) {
         question.markAnswerAsSolution(answer);
+        databaseHelper.updateAnswer(answer);
         databaseHelper.updateQuestion(question);
     }
     
     public void unmarkAnswerAsSolution(Question question, Answer answer) {
         question.unmarkAnswerAsSolution(answer);
+        databaseHelper.updateAnswer(answer);
         databaseHelper.updateQuestion(question);
     }
     
@@ -78,6 +80,11 @@ public class QuestionManager {
                 if (a.getId().equals(answerId)) {
                     q.removeAnswer(a);
                     answers.remove(a);
+                    boolean dbDeleted = databaseHelper.deleteAnswer(answerId);
+                    if (!dbDeleted) {
+                        System.err.println("Error deleting answer from DB.");
+                        return false;
+                    }
                     databaseHelper.updateQuestion(q);
                     return true;
                 }
@@ -200,14 +207,16 @@ public class QuestionManager {
         return userAnswers;
     }
     
+    // updates question object from db
     public void refreshQuestion(Question question) {
-        // clear the existing answers for the question
-        question.getAnswers().clear();
-        // fetch updated answers from the database
         List<Answer> freshAnswers = databaseHelper.getAnswersForQuestion(question.getId());
-        for (Answer a : freshAnswers) {
-            question.addAnswer(a);
-        }
+        question.refreshAnswers(freshAnswers);
+    }
+    
+    // method to update question object and database
+    public void updateQuestionText(Question question, String newText) {
+        question.updateQuestionText(newText);
+        databaseHelper.updateQuestion(question);
     }
     
     private boolean isValidQuestionText(String text) {

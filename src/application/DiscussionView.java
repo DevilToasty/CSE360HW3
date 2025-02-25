@@ -29,7 +29,6 @@ public class DiscussionView {
     
     private VBox questionsContainer;
     
-    // New field to hold the primary stage reference.
     private CustomTrackedStage primaryStage;
 
     public DiscussionView(DatabaseHelper databaseHelper, QuestionManager questionManager, User currentUser) {
@@ -74,6 +73,8 @@ public class DiscussionView {
         myQuestionsCheckbox = new CheckBox("My Questions");
         filterRow.getChildren().addAll(unansweredCheckbox, unapprovedCheckbox, trustedReviewersCheckbox, myQuestionsCheckbox);
         
+        // search bar (put in text)
+        
         // functions to update
         unansweredCheckbox.setOnAction(e -> updateQuestionList());
         unapprovedCheckbox.setOnAction(e -> updateQuestionList());
@@ -103,7 +104,7 @@ public class DiscussionView {
         
         for (Question q : allQuestions) {
             boolean matches = true;
-            
+
             if (unansweredCheckbox.isSelected() && !q.getAnswers().isEmpty()) {
                 matches = false;
             }
@@ -133,7 +134,7 @@ public class DiscussionView {
         
         for (Question q : filtered) {
             QuestionView qView = new QuestionView(q);
-            // Navigate to QuestionDetailView when a question snippet is clicked.
+            // navigate to page when a question snippet is clicked
             qView.setOnMouseClicked(event -> {
                 new QuestionDetailView(q, questionManager, databaseHelper, currentUser)
                     .show(primaryStage);

@@ -44,9 +44,10 @@ public class DatabaseHelper {
             + "id INT AUTO_INCREMENT PRIMARY KEY, "
             + "userName VARCHAR(255) UNIQUE, "
             + "password VARCHAR(255), "
-            + "email VARCHAR(255) UNIQUE, "
+            + "email VARCHAR(255), "
             + "name VARCHAR(255), "
-            + "roles VARCHAR(255))";
+            + "roles VARCHAR(255), "
+            + "CONSTRAINT unique_email UNIQUE (email))"; // if email is not null it must be unique
         statement.execute(userTable);
         
         // AHHH SO MANY
@@ -68,6 +69,7 @@ public class DatabaseHelper {
             + "isUsed BOOLEAN DEFAULT FALSE)";
         statement.execute(userOTPAccess);
         
+        // these are self explainitory
         String questionsTable = "CREATE TABLE IF NOT EXISTS Questions ("
             + "id UUID PRIMARY KEY, "
             + "author VARCHAR(255) NOT NULL, "
@@ -170,6 +172,7 @@ public class DatabaseHelper {
         return null;
     }
     
+    // adds to user dictionary object converted to table
     public boolean addApprovedReviewer(String ownerUserName, String reviewerName, double rating) {
         String query = "INSERT INTO ApprovedReviewers (ownerUserName, reviewerName, reviewerRating) VALUES (?, ?, ?)";
         try(PreparedStatement pstmt = connection.prepareStatement(query)) {
@@ -184,6 +187,7 @@ public class DatabaseHelper {
         }
     }
     
+    // updates 
     public boolean updateApprovedReviewerRating(String ownerUserName, String reviewerName, double rating) {
         String query = "UPDATE ApprovedReviewers SET reviewerRating = ? WHERE ownerUserName = ? AND reviewerName = ?";
         try(PreparedStatement pstmt = connection.prepareStatement(query)) {
@@ -211,6 +215,7 @@ public class DatabaseHelper {
         }
     }
     
+    // returns map of approved reviewers for a username
     public Map<String, Double> getApprovedReviewers(String ownerUserName) {
         Map<String, Double> map = new HashMap<>();
         String query = "SELECT reviewerName, reviewerRating FROM ApprovedReviewers WHERE ownerUserName = ?";
@@ -229,7 +234,7 @@ public class DatabaseHelper {
         return map;
     }
     
-    
+    // its kinda self explanitory now
     public boolean updateApprovedReviewers(String userName, String approvedReviewers) {
         String query = "UPDATE cse360users SET approvedReviewers = ? WHERE userName = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
@@ -243,6 +248,7 @@ public class DatabaseHelper {
         }
     }
     
+    // a scale of 0.0 -> 5.0 for each users dictionary 
     public boolean updateUserRating(String userName, Double rating) {
         String query = "UPDATE cse360users SET reviewerRating = ? WHERE userName = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
@@ -260,6 +266,7 @@ public class DatabaseHelper {
         }
     }
 
+    // sanatizes string in, and ensures the password passes 
     public boolean changePassword(String username, String newPassword) {
         String query = "SELECT * FROM cse360users WHERE userName = ?";
         String updatePasswordQuery = "UPDATE cse360users SET password = ? WHERE userName = ?";
@@ -352,11 +359,13 @@ public class DatabaseHelper {
         }
     }
 
+    // super clean function to get user roles from string
     public boolean hasRole(String username, String role) {
         if (getUserRoles(username).contains(sanitize(role))) return true;
         return false;
     }
 
+    // checks for role # to have validation for other features
     public int getRoleCount(String username) {
         ArrayList<String> roleList = new ArrayList<String>();
         roleList.add("Staff");
@@ -371,6 +380,7 @@ public class DatabaseHelper {
         return count;
     }
 
+    // helper to make sure admin it above 0
     public int getAdminCount() {
         String query = "SELECT COUNT(*) AS count FROM cse360users WHERE roles LIKE ?";
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
@@ -386,6 +396,7 @@ public class DatabaseHelper {
         return 0;
     }
 
+    // returns string in format "Student, Admin, Teacher" etc.
     public String getUserRoles(String userName) {
         String query = "SELECT roles FROM cse360users WHERE userName = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
@@ -400,6 +411,7 @@ public class DatabaseHelper {
         return null;
     }
 
+    // has to check if the user already has a role to make sure that you don't duplicate
     public void addUserRole(String username, String role) {
         String query = "SELECT roles FROM cse360users WHERE userName = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
@@ -439,6 +451,7 @@ public class DatabaseHelper {
         }
     }
 
+    // filters and removes role, then puts it back together
     public void removeUserRole(String username, String role) {
         String query = "SELECT roles FROM cse360users WHERE userName = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
@@ -473,6 +486,7 @@ public class DatabaseHelper {
         }
     }
 
+    // adds username and OPT to database
     public void addUserOTP(String username, String tempPassword) {
         String insertOrUpdateUserOTP = "MERGE INTO UserOTP (userName, tempPassword, isUsed) KEY (userName) VALUES (?, ?, FALSE)";
         try (PreparedStatement pstmt = connection.prepareStatement(insertOrUpdateUserOTP)) {
@@ -484,6 +498,7 @@ public class DatabaseHelper {
         }
     }
 
+    // makes sure the user has OTP
     public boolean isUserInOPT(String userName) {
         String query = "SELECT COUNT(*) FROM UserOTP WHERE userName = ? AND isUsed = FALSE";
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
@@ -498,6 +513,7 @@ public class DatabaseHelper {
         return false;
     }
 
+    // checks OTP correctness
     public boolean validateUserOTP(String userName, String tempPassword) {
         String query = "SELECT * FROM UserOTP WHERE userName = ? AND tempPassword = ? AND isUsed = FALSE";
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
@@ -514,6 +530,7 @@ public class DatabaseHelper {
         return false;
     }
 
+    // removes OTP code
     public void markUserOTPAsUsed(String userName) {
         String query = "UPDATE UserOTP SET isUsed = TRUE WHERE userName = ? AND isUsed = FALSE";
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
@@ -526,6 +543,7 @@ public class DatabaseHelper {
 
 // methods for questions and answers
     
+    // adds all of the question info, default values will be null for optionals
     public boolean insertQuestion(Question q) {
         String query = "INSERT INTO Questions (id, author, questionTitle, questionText, referencedQuestionId, timestamp, resolved) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
@@ -548,6 +566,7 @@ public class DatabaseHelper {
         return false;
     }
     
+    // same as as question but it also has links to questions
     public boolean insertAnswer(Answer a, UUID questionId) {
         String query = "INSERT INTO Answers (id, questionId, answerText, author, isApprovedSolution, timestamp, parentAnswerId) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
@@ -566,6 +585,7 @@ public class DatabaseHelper {
         return false;
     }
     
+    // updates question in database
     public boolean updateQuestion(Question q) {
         String query = "UPDATE Questions SET author = ?, questionTitle = ?, questionText = ?, referencedQuestionId = ?, timestamp = ?, resolved = ? WHERE id = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
@@ -588,6 +608,7 @@ public class DatabaseHelper {
         return false;
     }
     
+    // same thing
     public boolean updateAnswer(Answer a) {
         String query = "UPDATE Answers SET answerText = ?, author = ?, isApprovedSolution = ?, timestamp = ? WHERE id = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
@@ -604,6 +625,7 @@ public class DatabaseHelper {
         return false;
     }
     
+    // deletes from id number
     public boolean deleteQuestion(UUID questionId) {
         String query = "DELETE FROM Questions WHERE id = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
@@ -616,6 +638,7 @@ public class DatabaseHelper {
         return false;
     }
     
+    // same
     public boolean deleteAnswer(UUID answerId) {
         String query = "DELETE FROM Answers WHERE id = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
@@ -628,6 +651,7 @@ public class DatabaseHelper {
         return false;
     }
     
+    // returns list of all the question objects (for initialization)
     public List<Question> getAllQuestionsFromDB() {
         List<Question> questions = new ArrayList<>();
         String query = "SELECT * FROM Questions";
@@ -654,6 +678,7 @@ public class DatabaseHelper {
         return questions;
     }
     
+    // gets all answers for a particular question
     public List<Answer> getAnswersForQuestion(UUID questionId) {
         List<Answer> answers = new ArrayList<>();
         String query = "SELECT * FROM Answers WHERE questionId = ?";

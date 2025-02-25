@@ -17,6 +17,7 @@ public class QuestionDetailView {
     private DatabaseHelper databaseHelper;
     private User currentUser;
     
+    // store as instance variables
     private VBox answersContainer;    
     private VBox questionReplyContainer;  
 
@@ -43,22 +44,25 @@ public class QuestionDetailView {
         fullTextLabel.setWrapText(true);
         fullTextLabel.setStyle("-fx-font-size: 14px;");
         
-        // Reply container for the question.
+        // reply container for the question
         questionReplyContainer = new VBox();
         Button replyButton = new Button("Reply");
         replyButton.setOnAction(e -> {
+        	// checks if child (broken for now)
             if (questionReplyContainer.getChildren().isEmpty()) {
                 ReplyBox replyBox = new ReplyBox(text -> {
                     try {
                         questionManager.createAnswer(currentUser.getUserName(), text, question);
-                        // Refresh the current view with updated answers.
+                        // refresh the current view with updated answers
                         refreshContent();
                     } catch(Exception ex) {
                         ex.printStackTrace();
                     }
                 });
+                // adds to the nest
                 questionReplyContainer.getChildren().add(replyBox);
             } else {
+            	// main reply
                 questionReplyContainer.getChildren().clear();
             }
         });
@@ -66,6 +70,7 @@ public class QuestionDetailView {
         VBox questionContainer = new VBox(10);
         questionContainer.getChildren().addAll(fullTextLabel, replyButton, questionReplyContainer);
         
+        // for all the answers
         answersContainer = new VBox(10);
         loadAnswers();
         ScrollPane answersScroll = new ScrollPane(answersContainer);
@@ -81,11 +86,12 @@ public class QuestionDetailView {
         primaryStage.showScene(scene);
     }
     
+    // helper method to update the view
     private void loadAnswers() {
         answersContainer.getChildren().clear();
         for (Answer a : question.getAnswers()) {
             if (a.getParentAnswerId() == null) {
-                AnswerView aView = new AnswerView(a, question, questionManager, currentUser, question.getAnswers());
+                AnswerView aView = new AnswerView(a, question, questionManager, currentUser, question.getAnswers(), this::refreshContent); // refreshes the page
                 answersContainer.getChildren().add(aView);
             }
         }
@@ -97,4 +103,5 @@ public class QuestionDetailView {
         loadAnswers();
         questionReplyContainer.getChildren().clear();
     }
+    
 }

@@ -18,7 +18,7 @@ public class User {
         this.userName = userName;
         this.password = password;
         this.roles = roles;
-        this.email = "";
+        this.email = null;
         this.name = "";
         this.approvedReviewers = new HashMap<>();
     }

@@ -4,15 +4,28 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class Answer {
-    private final UUID id;
+	private final UUID id;
     private String answerText;
     private String author;
     private boolean isApprovedSolution;
     private Question referencedQuestion;
     private LocalDateTime timestamp;
-    private UUID parentAnswerId;
+    private UUID parentAnswerId; // store to know if its a reply to a reply or not
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Answer)) return false;
+        Answer answer = (Answer) o;
+        return id.equals(answer.id);
+    }
 
-    // constructor for a direct answer (no parent reply)
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+
+    // constructor for a direct answer 
     public Answer(String answerText, String author) {
         this.id = UUID.randomUUID();
         this.answerText = answerText;
@@ -22,7 +35,7 @@ public class Answer {
         this.parentAnswerId = null;
     }
     
-    // constructor that accepts a parentAnswerId (for replying to an answer)
+    // constructor that accepts a parentAnswerId (for replying to an answer, broken for now)
     public Answer(String answerText, String author, UUID parentAnswerId) {
         this.id = UUID.randomUUID();
         this.answerText = answerText;
