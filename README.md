@@ -1,9 +1,9 @@
-<<<<<<< HEAD
-# CSE360-HW2
+# CSE360-HW3
 =======
-README File for Team Project Phase 1
+README File for Homework 3 - 
 Overview
-This repository contains all the files and deliverables required for Team Project Phase 1, including source code, documentation, screencasts, and automated tests. Below is a detailed list of items in the repository and instructions on how to access and use them.
+
+This repository contains all the files and deliverables required for HW3, including source code, documentation, screencasts, and automated tests. Below is a detailed list of items in the repository and instructions on how to access and use them.
 
 Repository Contents
 1. Source Code
@@ -20,12 +20,12 @@ StartCSE360.java – The main entry point to start the application.
 Additional files for user roles: AdminSetupPage.java, StudentHomePage.java, InstructorHomePage.java, ReviewerHomePage.java, StaffHomePage.java.
 
 2. Screencasts
-Location: Screencasts_Scrum_Meetings/ in the main branch
+____ (ZOOM LINK TO BE ADDED)a
 
-Description: Contains video recordings demonstrating the functional requirements, architecture design, and team standup meetings.
+Description: Contains video recordings demonstrating the functional requirements, architecture design.
 
 3. Database Info
-   If the data is not reset the info would stay the same but if the data is not reset the data will be like
+   If the data is not reset the info would stay the same but if the data is not reset the data will be:
 
    Admin
    Username: group43
@@ -34,4 +34,3 @@ Description: Contains video recordings demonstrating the functional requirements
    User
    Username: steve1
    Password: Abcd1234$
->>>>>>> 6279184 (Initial commit of CSE360-Group-43-main)
