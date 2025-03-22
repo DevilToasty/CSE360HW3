@@ -13,11 +13,8 @@ Description: Contains all Java source files for the application. These files inc
 
 Key Files:
 
-AdminUserManager.java – Manages admin-specific functions like user deletion and account updates.
-PasswordRecognizer.java – Validates passwords based on defined criteria.
-UserNameRecognizer.java – Ensures usernames meet the required format and rules.
-StartCSE360.java – The main entry point to start the application.
-Additional files for user roles: AdminSetupPage.java, StudentHomePage.java, InstructorHomePage.java, ReviewerHomePage.java, StaffHomePage.java.
+HW3TestCases.java - HW3 Test cases
+
 
 2. Screencasts
 ____ (ZOOM LINK TO BE ADDED)a
