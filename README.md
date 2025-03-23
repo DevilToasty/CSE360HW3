@@ -18,8 +18,8 @@ HW3TestCases.java - HW3 Test cases
 
 2. Screencasts
    
-[LINK](https://asu.zoom.us/rec/share/S5OPVy3b46YV5g0zgBNWxp2ad8wrmFtxsDkoVO8Tq7NDfr-nksQJEv4429_qqVO0.cO3_nz5q9P5Bh28N?startTime=1742686316000
-Passcode: Nk=C2Kf?)
+[LINK](https://asu.zoom.us/rec/share/S5OPVy3b46YV5g0zgBNWxp2ad8wrmFtxsDkoVO8Tq7NDfr-nksQJEv4429_qqVO0.cO3_nz5q9P5Bh28N?startTime=1742686316000)
+Passcode: Nk=C2Kf?
 
 Description: Contains video recordings demonstrating the functional requirements, architecture design.
 
